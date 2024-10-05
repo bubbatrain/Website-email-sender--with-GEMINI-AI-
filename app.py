@@ -13,7 +13,7 @@ from flask_wtf import FlaskForm, CSRFProtect
 from wtforms import StringField, EmailField, SubmitField
 from wtforms.validators import DataRequired, Email
 import email_validator
-import google.generativeai as genai
+import google.generativeai
 import smtplib
 import ssl
 from email.message import EmailMessage 
@@ -23,7 +23,7 @@ from email.message import EmailMessage
 # Flask app configurations
 app = Flask(__name__)
 # Set secret key
-app.secret_key = os.environ["FLASK_SECRET_KEY"]
+app.secret_key = os.getenv("FLASK_SECRET_KEY")
 # Create app
 bootstrap = Bootstrap(app)
 csrf = CSRFProtect(app)
@@ -52,10 +52,10 @@ def home():
         # --------- AI PROMPT REQUEST ---------
 
         # Configure AI model with API KEY
-        genai.configure(api_key=os.environ["API_KEY"])
+        google.generativeai.configure(api_key=os.getenv("API_KEY"))
 
         # Select AI model to use
-        model = genai.GenerativeModel('gemini-1.5-flash')
+        model = google.generativeai.GenerativeModel('gemini-1.5-flash')
 
         # Generate content from the given prompt
         response = model.generate_content(prompt)
@@ -63,8 +63,8 @@ def home():
 
         # --------- EMAIL SENDING ---------
         # Sender email details
-        SENDER_EMAIL = os.environ["SENDER_EMAIL"]
-        SENDER_PASS = os.environ["SENDER_PASS"]
+        SENDER_EMAIL = os.getenv("SENDER_EMAIL")
+        SENDER_PASS = os.getenv("SENDER_PASS")
         
         # Receiver email details from the given email
         RECEIVER_EMAIL = receiver_email
